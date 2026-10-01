@@ -5,7 +5,7 @@ import asyncio
 import time
 import matplotlib.pyplot as plt
 import yaml
-import openai
+# import openai
 import requests
 from pathlib import Path
 from datetime import datetime
@@ -13,10 +13,13 @@ from src.classifier import classify_email
 from src.models import PromptConfig
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from src.report_generator import generate_html_report
+import os
+
+USE_MOCK = os.getenv("MOCK_MODE", "false").lower() == "true"
 
 
 def send_slack_alert(score, thresholds, run_id):
-    webhook_url = "https://hooks.slack.com/services/XXX/YYY/ZZZ"  # replace with your Slack webhook
+    webhook_url = os.getenv("SLACK_WEBHOOK_URL") # replace with your Slack webhook
     message = {
         "text": (
             f"📊 Eval Run {run_id}\n"
@@ -35,7 +38,6 @@ def send_slack_alert(score, thresholds, run_id):
     except Exception as e:
         print(f"Slack alert failed: {e}")
 
-
 async def judge_summary(expected, actual, model="gpt-4o-mini"):
     prompt = f"""
     You are evaluating a customer support summary.
@@ -44,15 +46,23 @@ async def judge_summary(expected, actual, model="gpt-4o-mini"):
     Rate relevance on a scale of 1 (poor) to 5 (excellent).
     Only return the number.
     """
-    response = await openai.ChatCompletion.acreate(
-        model=model,
-        messages=[
-            {"role": "system", "content": "You are a strict evaluator."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    score = int(response.choices[0].message.content.strip())
-    return score
+
+    if USE_MOCK:
+        # Return a fake score for testing without API calls
+        print("MOCK_MODE enabled: returning dummy relevance score")
+        return 5  # you can randomize or vary this if you want
+    else:
+        import openai
+        response = await openai.ChatCompletion.acreate(
+            model=model,
+            messages=[
+                {"role": "system", "content": "You are a strict evaluator."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        score = int(response.choices[0].message.content.strip())
+        return score
+
 
 def load_prompt_config(path: str) -> PromptConfig:
     with open(path, "r") as f:
@@ -63,20 +73,30 @@ def load_dataset(path: str):
     with open(path, "r") as f:
         return json.load(f)["cases"]
 
+def classify_email_mock(input_text, prompt_config):
+    return type("MockResponse", (), {
+        "model_dump": lambda self: {
+            "category": "MOCK_CATEGORY",
+            "summary": "MOCK_SUMMARY"
+        },
+        "usage": {"total_tokens": 0}
+    })()
+
 async def run_case(case, prompt_config):
     start = time.time()
-    response = classify_email(case["input"], prompt_config.dict())
+    if USE_MOCK:
+        response = classify_email_mock(case["input"], prompt_config.model_dump())
+    else:
+        response = classify_email(case["input"], prompt_config.model_dump())
     latency = time.time() - start
 
-    result = response.dict()
+    result = response.model_dump()
 
-    # Summary relevance via LLM-as-judge
     relevance_score = await judge_summary(
         case["expected_output"]["summary"],
         result["summary"]
     )
 
-    # Token usage (if available from OpenAI response)
     tokens_used = getattr(response, "usage", {}).get("total_tokens", None)
 
     return {
@@ -297,7 +317,7 @@ if __name__ == "__main__":
                 print(f"Case {d['id']} changed: {d['old']} -> {d['new']}")
 
      # Generate HTML report
-    generate_html_report(run_id, score, results, diffs if 'diffs' in locals() else None)
+    generate_html_report(run_id, score, results, diffs)
 
 if len(previous_runs) > 1:
     old_score = old_data["score"]
