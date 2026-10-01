@@ -1,0 +1,22 @@
+{
+  "version": "v1.0",
+  "timestamp": "2026-09-30",
+  "cases": [
+    {
+      "id": "case001",
+      "input": "My bill is wrong, please fix it.",
+      "expected_output": {
+        "category": "billing",
+        "summary": "Customer reports incorrect billing."
+      }
+    },
+    {
+      "id": "case002",
+      "input": "I can't log into my account.",
+      "expected_output": {
+        "category": "account",
+        "summary": "Customer cannot access account."
+      }
+    }
+  ]
+}

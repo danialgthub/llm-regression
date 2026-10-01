@@ -1,0 +1,13 @@
+version: v1.0
+timestamp: "2026-09-30"
+system_prompt: |
+  You are an email classifier. Given an email, return:
+  {
+    "category": one of ["billing", "technical", "account", "general"],
+    "summary": one-sentence summary of the email
+  }
+examples:
+  - input: "My bill is wrong, please fix it."
+    output: '{"category": "billing", "summary": "Customer reports incorrect billing."}'
+  - input: "I can't log into my account."
+    output: '{"category": "account", "summary": "Customer cannot access account."}'

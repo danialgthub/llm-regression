@@ -1,0 +1,34 @@
+{
+  "run_id": "20260930_165553",
+  "score": {
+    "total": 2,
+    "correct": 0,
+    "accuracy": 0.0
+  },
+  "cases": [
+    {
+      "id": "case001",
+      "expected": {
+        "category": "billing",
+        "summary": "Customer reports incorrect billing."
+      },
+      "actual": {
+        "category": "general",
+        "summary": "Stub summary for testing"
+      },
+      "latency": 0.0004355907440185547
+    },
+    {
+      "id": "case002",
+      "expected": {
+        "category": "account",
+        "summary": "Customer cannot access account."
+      },
+      "actual": {
+        "category": "general",
+        "summary": "Stub summary for testing"
+      },
+      "latency": 2.8133392333984375e-05
+    }
+  ]
+}

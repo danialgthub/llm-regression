@@ -1,0 +1,46 @@
+{
+  "version": "v1.0",
+  "timestamp": "2026-09-30",
+  "cases": [
+    {
+      "id": "case001",
+      "input": "My bill is wrong, please fix it.",
+      "expected_output": {
+        "category": "billing",
+        "summary": "Customer reports incorrect billing."
+      },
+      "expected_difficulty": "easy",
+      "notes": "Simple billing issue, baseline case."
+    },
+    {
+      "id": "case002",
+      "input": "I can't log into my account.",
+      "expected_output": {
+        "category": "account",
+        "summary": "Customer cannot access account."
+      },
+      "expected_difficulty": "easy",
+      "notes": "Basic account access problem."
+    },
+    {
+  "id": "case010",
+  "input": "Why do you keep charging me twice??!!",
+  "expected_output": {
+    "category": "billing",
+    "summary": "Customer complains about duplicate charges."
+  },
+  "expected_difficulty": "medium",
+  "notes": "Sarcasm + punctuation stress test."
+  },
+  {
+  "id": "case020",
+  "input": "Hola, no puedo acceder a mi cuenta.",
+  "expected_output": {
+    "category": "account",
+    "summary": "Customer cannot access account (Spanish)."
+  },
+  "expected_difficulty": "hard",
+  "notes": "Mixed language case."
+  }
+  ]
+}

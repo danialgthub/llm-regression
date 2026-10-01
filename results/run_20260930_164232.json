@@ -1,0 +1,26 @@
+[
+  {
+    "id": "case001",
+    "expected": {
+      "category": "billing",
+      "summary": "Customer reports incorrect billing."
+    },
+    "actual": {
+      "category": "general",
+      "summary": "Stub summary for testing"
+    },
+    "latency": 0.0005223751068115234
+  },
+  {
+    "id": "case002",
+    "expected": {
+      "category": "account",
+      "summary": "Customer cannot access account."
+    },
+    "actual": {
+      "category": "general",
+      "summary": "Stub summary for testing"
+    },
+    "latency": 3.314018249511719e-05
+  }
+]
