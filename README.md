@@ -1,5 +1,3 @@
-# Smart Resume Analyzer & Career Recommender
-
 This project evaluates an email classifier against a golden dataset, generates reports, and tracks accuracy trends over time.  
 It supports both **Mock Mode** (free, no API key) and **Real Mode** (requires OpenAI API key).
 
